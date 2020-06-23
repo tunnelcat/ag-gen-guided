@@ -146,15 +146,15 @@ After running the generator, the database should be populated. Check this by con
 ```sh
 psql ag_gen
 ```
-and check the database with normal SQL commands.
+and check the database with normal SQL/PostgreSQL commands.
 
 ### Running Manually (Example)
 
 Execute an example from the examples directory.  
-*Since the program is located at* `build/ag_gen`, *run this from the* `build` *directory.*
+*Since the program should be located at* `build/ag_gen`, *run this from the* `build` *directory.*
 
 ```sh
-./ag_gen -n ../examples/thesis_example.nm -x ../examples/thesis_example.xp
+./ag_gen -n ../examples/1.nm -x ../examples/1.xp
 ```
 
 ## Contributing
