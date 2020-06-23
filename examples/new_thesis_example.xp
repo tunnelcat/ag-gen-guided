@@ -1,0 +1,34 @@
+exploit website_sql_injection(website, database)=
+    preconditions:
+        quality:website,sql_injection=true;
+        quality:database,service_type=database;
+        topology:website<->database,private_segment;
+    postconditions:
+        insert quality:database,data_extraction=true;
+        insert quality:database,data_removal=true;
+.
+
+exploit malware_download(machine)=
+    preconditions:
+        quality:machine,malware_downloaded=false;
+        quality:machine,user_phished=true;
+    postconditions:
+        update quality:machine,malware_downloaded=true;
+.
+
+exploit malware_execute(machine)=
+    preconditions:
+        quality:machine,malware_downloaded=true;
+        quality:machine,user_admin_privs=true;
+    postconditions:
+        insert quality:machine,intruder_admin=true;
+.
+
+exploit pivot_storage(machine1, machine2)=
+    preconditions:
+        quality:machine1,intruder_admin=true;
+        quality:machine2,service_type=storage;
+        topology:machine1->machine2,private_segment;
+    postconditions:
+        insert quality:machine2,intruder_access=true;
+.

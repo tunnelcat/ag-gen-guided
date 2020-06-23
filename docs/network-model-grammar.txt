@@ -1,0 +1,31 @@
+<network-model> ::= network <identifier> = assets : <asset-list> facts : <f-list> .
+<asset-list>    ::= <asset-list> <identifier> ;
+                  | <EOL>
+<f-list>     ::= <f-list> <f> ;
+                  | <EOL>
+<f>          ::= quality : <identifier> , <statement> ;
+                  | topology : <identifier> <direction> <identifier> , <statement> ;
+
+<statement>     ::= <identifier> <operator> <value>
+<identifier>    ::= [A-Za-z][A-Za-z0-9_]*
+
+<value>         ::= <string>
+                  | <number>
+<string>        ::= [A-Za-z0-9_]*
+<number>        ::= [1-9][0-9]*
+
+<operator>      ::= <eqlop>
+                  | <relop>
+<eqlop>         ::= =
+                  | :=
+<relop>         ::= <
+                  | >
+                  | <=
+                  | >=
+
+<direction>     ::= ->
+                  | <->
+
+<whitespace>    ::= " "
+                  | \t
+                  | \n

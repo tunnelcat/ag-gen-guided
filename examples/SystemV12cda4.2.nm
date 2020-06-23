@@ -1,0 +1,743 @@
+network model =
+	assets :
+		#Digital
+		tempSensor1; #CS/CDA
+		tempSensor2; #CS/CDA
+		seismicSensor1; #CS/CDA
+		automaticScram; #CS/CDA
+		operator; #CS/CDA
+		controlRodController; #CS/CDA
+		controlBlade1; #CS/CDA
+		controlBlade2; #CS/CDA
+		controlBlade5; #CS/CDA
+		controlBlade4; #CS/CDA
+		pulseControlRod; #CS/CDA
+		buildingCompressedAir; # Affects control rod movment, which is a CS, thus CDA
+		pressureTankSolenoidValve; # Affects control rod movment, which is a CS, thus CDA
+		linearPowerSensor;#aka CIC #CS/CDA
+		nlogPowerSensor; #CS/CDA
+		pulsePowerSensor;#aka UIC #CS/CDA
+		controlSystemRecorder; #Listed as CS in Fig 2., thus CDA if digital
+		buildingEvacAlarm; #CS/CDA (S/EP)
+		beamRoomScramChain; #CS/CDA if digital
+		highFluxMonitor; #CS/CDA
+		periodSensor; #CS/CDA
+		logNHVFailureSensor; #CS/CDA
+		linearHVFailureSensor; #CS/CDA
+		pulseHVFailureSensor; #CS/CDA
+		continuousAirMonitor; #CS/CDA (Safety)
+		areaMonitoringSystem; #CS/CDA (Safety)
+		diffuser; #CS/CDA (Safety)
+		coolantLevelSensor; #Can casue operator to be instructed to SCRAM, thus CDA
+		backupPower; #CS/CDA
+		bridge; #CDA since it can affect radiation levels, which is safety-realted
+
+		#water purification system
+		waterMakeupPump; #CS, CDA if digital
+		purificationRecirculationPump; #CS, CDA if digital
+		flowmeter; #Not normally visible, doesn't communicate... not a CS...
+		conductivityCell1; #CS/CDA
+		conductivityCell2; #CS/CDA
+		ionExchanger; #Not digital
+		poolTotalizer; #Not digital, but would be a CDA if replaced with a digital component
+
+		#heat exchange system
+		coolantTempSensor; #CS/CDA
+		heatExchangePump1; #CS/CDA
+		heatExchangePump2; #CS/CDA
+		conductivityCell3; #CS/CDA
+		towerTotalizer; #Not digital, but problably a CS. If so, would be a CDA if digital
+		coolingTowerFan; #Probably CS/CDA. Want to check on consequences of failure and update asset list
+
+		#Ventilation System
+		ventilationController; #CS/CDA
+		ventilationIntakeFan; #CS/CDA
+		ventilationOuttakeFan; #CS/CDA
+		ventilationAirDetector; #CS/CDA
+		ventilationDampers; #CS/CDA
+		ventilationDiluteFan; #CS/CDA
+
+		#Physical
+		#combining values
+		reactor; #CS
+		coolant; #CS
+		airborneRadiation; #CS
+		buildingPower;
+		seismicActivity;
+
+		# For CDA Generation
+		finishTag;
+
+	facts :
+		# Initial Critical Assets List
+		quality:reactor,critical=true;
+
+		# Statement of which assets are digital
+		quality:tempSensor1,digital=true;
+		quality:tempSensor2,digital=true;
+		quality:seismicSensor1,digital=true;
+		quality:automaticScram,digital=true;
+		quality:operator,digital=true;
+		quality:controlRodController,digital=true;
+		quality:controlBlade1,digital=true;
+		quality:controlBlade2,digital=true;
+		quality:controlBlade5,digital=true;
+		quality:controlBlade4,digital=true;
+		quality:pulseControlRod,digital=true;
+		quality:buildingCompressedAir,digital=true;
+		quality:pressureTankSolenoidValve,digital=true;
+		quality:linearPowerSensor,digital=true;
+		quality:nlogPowerSensor,digital=true;
+		quality:pulsePowerSensor,digital=true;
+		quality:controlSystemRecorder,digital=true;
+		quality:buildingEvacAlarm,digital=true;
+		quality:beamRoomScramChain,digital=true;
+		quality:highFluxMonitor,digital=true;
+		quality:periodSensor,digital=true;
+		quality:logNHVFailureSensor,digital=true;
+		quality:linearHVFailureSensor,digital=true;
+		quality:pulseHVFailureSensor,digital=true;
+		quality:continuousAirMonitor,digital=true;
+		quality:areaMonitoringSystem,digital=true;
+		quality:diffuser,digital=true;
+		quality:coolantLevelSensor,digital=true;
+		quality:backupPower,digital=true;
+		quality:bridge,digital=true;
+
+		# Tag for when CDAs can no longer be generated
+		quality:finishTag,completed=false;
+
+		#TempSensor Facts
+		quality:tempSensor1,status=ok;
+		quality:tempSensor2,status=ok;
+		quality:tempSensor1,temp:=50;
+		quality:tempSensor2,temp:=50;
+		quality:tempSensor1,calibration=normal;
+		quality:tempSensor2,calibration=normal;
+		quality:tempSensor1,powerStatus=on;
+		quality:tempSensor2,powerStatus=on;
+
+		topology:tempSensor1->automaticScram,connected_modbus_slave;
+		quality:tempSensor1,spoofed=false;
+		topology:tempSensor2->automaticScram,connected_modbus_slave;
+		quality:tempSensor2,spoofed=false;
+		topology:tempSensor1->controlSystemRecorder,connected_modbus_slave;
+		topology:tempSensor2->controlSystemRecorder,connected_modbus_slave;
+		topology:tempSensor1->operator,connected_modbus_slave;
+		quality:tempSensor1,spoofed=false;
+		topology:tempSensor2->operator,connected_modbus_slave;
+		quality:tempSensor2,spoofed=false;
+		topology:reactor<->tempSensor1,physical;
+		topology:reactor<->tempSensor2,physical;
+		topology:buildingPower->tempSensor1,power:=120;
+		topology:buildingPower->tempSensor2,power:=120;
+
+		quality:tempSensor1,platform=tempSensor;
+		quality:tempSensor2,platform=tempSensor;
+
+		#SeismicSensor Facts
+		quality:seismicSensor1,status=ok;
+		quality:seismicSensor1,powerStatus=on;
+		quality:seismicSensor1,magnitude:=.003;
+
+		topology:seismicSensor1->automaticScram,connected_modbus_slave;
+		quality:seismicSensor1,spoofed=false;
+		topology:seismicActivity<->seismicSensor1,physical;
+		topology:buildingPower->seismicSensor1,power:=120;
+
+		quality:seismicSensor1,platform=seismicSensor;
+
+		#Automatic Scram Facts
+		quality:automaticScram,status=ok;
+		quality:automaticScram,powerStatus=on;
+		quality:automaticScram,mode=manual;
+		quality:automaticScram,activated=false;
+
+		topology:automaticScram->controlRodController,connected_emag_power;
+		topology:automaticScram->tempSensor1,connected_modbus_master;
+		topology:automaticScram->tempSensor2,connected_modbus_master;
+		topology:automaticScram->seismicSensor1,connected_modbus_master;
+		topology:automaticScram->highFluxMonitor,connected_modbus_master;
+		topology:automaticScram->buildingEvacAlarm,connected_modbus_master;
+		topology:automaticScram->beamRoomScramChain,connected_modbus_master;
+		topology:automaticScram->logNHVFailureSensor,connected_modbus_master;
+		topology:automaticScram->linearHVFailureSensor,connected_modbus_master;
+		topology:automaticScram->pulseHVFailureSensor,connected_modbus_master;
+		topology:automaticScram->operator,connected_modbus_master;
+		topology:buildingPower->automaticScram,power:=120;
+
+		quality:automaticScram,platform=scramUnit;
+
+		#Operator Facts
+		quality:operator,status=ok;
+		quality:operator,powerStatus=on;
+		quality:operator,manualScram=false;
+		quality:operator,operationMode=manual;
+		quality:operator,consoleKey=inserted;
+
+		topology:operator->automaticScram,connected_modbus_slave;
+		quality:operator,spoofed=false;
+		topology:operator->coolantLevelSensor,audible;
+		topology:operator->coolantTempSensor,connected_modbus_master;
+		topology:operator->controlRodController,connected_modbus_master;
+		topology:operator->buildingEvacAlarm,connected_modbus_master;
+		topology:operator->tempSensor1,connected_modbus_master;
+		topology:operator->tempSensor2,connected_modbus_master;
+		topology:operator->linearPowerSensor,connected_modbus_master;
+		topology:operator->nlogPowerSensor,connected_modbus_master;
+		topology:operator->pulsePowerSensor,connected_modbus_master;
+		topology:operator->continuousAirMonitor,connected_modbus_master;
+		topology:operator->bridge,connected_modbus_master;
+		topology:operator->periodSensor,connected_modbus_master;
+		topology:operator->areaMonitoringSystem,connected_modbus_master;
+		topology:operator->ventilationAirDetector,connected_modbus_master;
+		topology:operator->conductivityCell1,connected_modbus_master;
+		topology:operator->conductivityCell2,connected_modbus_master;
+		topology:operator->conductivityCell3,connected_modbus_master;
+		topology:operator->heatExchangePump1,connected_modbus_master;
+		topology:operator->heatExchangePump2,connected_modbus_master;
+		topology:operator->diffuser,connected_modbus_master;
+		topology:buildingPower->operator,power:=120;
+
+		quality:operator,platform=operatorStation;
+
+		#Control Rod Facts
+		quality:controlRodController,status=ok;
+		quality:controlRodController,powerStatus=on;
+		quality:controlRodController,emagPower=on;
+
+		topology:controlRodController->operator,connected_modbus_slave;
+		quality:controlRodController,spoofed=false;
+		topology:controlRodController->pressureTankSolenoidValve,connected_modbus_master;
+		topology:controlRodController->nlogPowerSensor,connected_modbus_master;
+		topology:buildingPower->controlRodController,power:=120;
+
+		quality:controlRodController,platform=controlRodController;
+
+		#Control rod position intended to represent percent of max height
+			quality:controlBlade1,motorStatus=ok;
+			quality:controlBlade2,motorStatus=ok;
+			quality:controlBlade4,motorStatus=ok;
+			quality:controlBlade5,motorStatus=ok;
+
+			quality:controlBlade1,scrammable=true;
+			quality:controlBlade2,scrammable=true;
+			quality:controlBlade4,scrammable=true;
+			quality:controlBlade5,scrammable=false;
+
+			quality:controlBlade1,actualPosition:=.5;
+			quality:controlBlade2,actualPosition:=.5;
+			quality:controlBlade5,actualPosition:=1;
+			quality:controlBlade4,actualPosition:=.5;
+
+			quality:controlBlade1,reportedPosition:=.5;
+			quality:controlBlade2,reportedPosition:=.5;
+			quality:controlBlade5,reportedPosition:=1;
+			quality:controlBlade4,reportedPosition:=.5;
+
+			quality:pulseControlRod,actualPosition:=1;
+			quality:pulseControlRod,cylinderPosition:=1;
+			quality:pulseControlRod,reportedPosition:=1;
+			quality:pulseControlRod,pulsed=false;
+			quality:pulseControlRod,scrammable=true;
+
+			quality:controlBlade1,register=0;
+			quality:controlBlade2,register=4;
+			quality:controlBlade5,register=16;
+			quality:controlBlade4,register=12;
+			quality:pulseControlRod,register=8;
+
+			quality:controlBlade1,platform=controlBlade;
+			quality:controlBlade2,platform=controlBlade;
+			quality:controlBlade5,platform=controlBlade;
+			quality:controlBlade4,platform=controlBlade;
+			quality:pulseControlRod,platform=pulseControlRod;
+
+			#Subcomponent Connections
+			topology:controlBlade1->controlRodController,subcomponent;
+			topology:controlBlade2->controlRodController,subcomponent;
+			topology:controlBlade5->controlRodController,subcomponent;
+			topology:controlBlade4->controlRodController,subcomponent;
+			topology:pulseControlRod->controlRodController,subcomponent;
+			#pressureTankSolenoidValve conncetion is unidirectional
+
+		#Building Compressed Air
+		quality:buildingCompressedAir,status=ok;
+		quality:buildingCompressedAir,powerStatus=on;
+		quality:buildingCompressedAir,compressor=on;
+		quality:buildingCompressedAir,ctValve=open;#Compressor to Tank
+		quality:buildingCompressedAir,tankPressure:=80;#psi
+
+		topology:buildingCompressedAir->pressureTankSolenoidValve,pneumatic_closed;
+		topology:buildingPower->buildingCompressedAir,power:=120;
+
+		quality:buildingCompressedAir,platform=airCompressor;
+
+		#Pressure Tank Solenoid Valve
+		quality:pressureTankSolenoidValve,status=ok;
+		quality:pressureTankSolenoidValve,powerStatus=on;
+		quality:pressureTankSolenoidValve,tankPressure=80;#psi
+
+		topology:pressureTankSolenoidValve->controlRodController,connected_modbus_slave;
+		topology:pressureTankSolenoidValve->pulseControlRod,pneumatic_closed;
+		#buildingCompressedAir conncetion is unidirectional
+
+		#Power Sensors
+		#Power units are in percent max
+			#Linear
+			quality:linearPowerSensor,status=ok;
+			quality:linearPowerSensor,powerStatus=on;
+			quality:linearPowerSensor,powerLevel:=0.1;
+
+			topology:linearPowerSensor->highFluxMonitor,connected_modbus_slave;
+			topology:linearPowerSensor->controlSystemRecorder,connected_modbus_slave;
+			topology:linearPowerSensor->operator,connected_modbus_slave;
+		quality:linearPowerSensor,spoofed=false;
+
+			topology:reactor<->linearPowerSensor,physical;
+			topology:buildingPower->linearPowerSensor,power:=120;
+
+			quality:linearPowerSensor,platform=powerSensor;
+
+			#nlog
+			quality:nlogPowerSensor,status=ok;
+			quality:nlogPowerSensor,powerStatus=on;
+			quality:nlogPowerSensor,powerLevel:=0.1;
+
+			topology:nlogPowerSensor->operator,connected_modbus_slave;
+		quality:nlogPowerSensor,spoofed=false;
+			topology:nlogPowerSensor->controlRodController,connected_modbus_slave;
+			topology:reactor<->nlogPowerSensor,physical;
+			topology:buildingPower->nlogPowerSensor,power:=120;
+
+			quality:nlogPowerSensor,platform=powerSensor;
+
+			#Pulse
+			quality:pulsePowerSensor,status=ok;
+			quality:pulsePowerSensor,powerStatus=on;
+			quality:pulsePowerSensor,powerLevel:=0.1;
+
+			topology:pulsePowerSensor->highFluxMonitor,connected_modbus_slave;
+			topology:pulsePowerSensor->operator,connected_modbus_slave;
+		quality:pulsePowerSensor,spoofed=false;
+			topology:reactor<->pulsePowerSensor,physical;
+			topology:buildingPower->pulsePowerSensor,power:=120;
+
+			quality:pulsePowerSensor,platform=powerSensor;
+
+		#Control System Recorder
+		quality:controlSystemRecorder,status=ok;
+		quality:controlSystemRecorder,powerStatus=on;
+		quality:controlSystemRecorder,dataValid=true;
+
+		topology:controlSystemRecorder->tempSensor1,connected_modbus_master;
+		topology:controlSystemRecorder->tempSensor2,connected_modbus_master;
+		topology:controlSystemRecorder->linearPowerSensor,connected_modbus_master;
+		topology:buildingPower->controlSystemRecorder,power:=120;
+
+		quality:controlSystemRecorder,platform=controlSystemRecorder;
+
+		#Building Evacuation Alarm
+		quality:buildingEvacAlarm,status=ok;
+		quality:buildingEvacAlarm,powerStatus=on;
+		quality:buildingEvacAlarm,activated=false;
+
+		topology:buildingEvacAlarm->areaMonitoringSystem,connected_modbus_master;
+		topology:buildingEvacAlarm->coolingTowerFan,connected_modbus_slave;
+		topology:buildingEvacAlarm->operator,connected_modbus_slave;
+		quality:buildingEvacAlarm,spoofed=false;
+		topology:buildingEvacAlarm->automaticScram,connected_modbus_slave;
+		quality:buildingEvacAlarm,spoofed=false;
+		topology:buildingPower->buildingEvacAlarm,power:=120;
+
+		quality:buildingEvacAlarm,platform=evacuationAlarm;
+
+		#Beam Room Scram Chain
+		quality:beamRoomScramChain,status=ok;
+		quality:beamRoomScramChain,powerStatus=on;
+		quality:beamRoomScramChain,activated=false;
+		quality:beamRoomScramChain,accessGate=closed;
+		quality:beamRoomScramChain,keysInserted=true;
+
+		topology:beamRoomScramChain->automaticScram,connected_modbus_slave;
+		quality:beamRoomScramChain,spoofed=false;
+		topology:buildingPower->beamRoomScramChain,power:=120;
+
+		quality:beamRoomScramChain,platform=scramInput;#Need to check
+
+		#High Flux Monitor
+		quality:highFluxMonitor,status=ok;
+		quality:highFluxMonitor,powerStatus=on;
+		quality:highFluxMonitor,alarmActivated=false;
+		quality:highFluxMonitor,scramActivated=false;
+
+		topology:highFluxMonitor->linearPowerSensor,connected_modbus_master;
+		topology:highFluxMonitor->pulsePowerSensor,connected_modbus_master;
+		topology:highFluxMonitor->automaticScram,connected_modbus_slave;
+		quality:highFluxMonitor,spoofed=false;
+		topology:buildingPower->highFluxMonitor,power:=120;
+
+		quality:highFluxMonitor,platform=fluxMonitor;
+
+		#Period Sensor
+		quality:periodSensor,status=ok;
+		quality:periodSensor,powerStatus=on;
+		quality:periodSensor,output=5;#Period in seconds
+
+		topology:periodSensor->operator,connected_modbus_slave;
+		quality:periodSensor,spoofed=false;
+		topology:buildingPower->periodSensor,power:=120;
+
+		quality:periodSensor,platform=periodSensor;
+
+		#HV Failure Sensors
+		quality:logNHVFailureSensor,status=ok;
+		quality:logNHVFailureSensor,powerStatus=on;
+		quality:logNHVFailureSensor,activated=false;
+		quality:linearHVFailureSensor,status=ok;
+		quality:linearHVFailureSensor,powerStatus=on;
+		quality:linearHVFailureSensor,activated=false;
+		quality:pulseHVFailureSensor,status=ok;
+		quality:pulseHVFailureSensor,powerStatus=on;
+		quality:pulseHVFailureSensor,activated=false;
+
+		topology:logNHVFailureSensor->automaticScram,connected_modbus_slave;
+		quality:logNHVFailureSensor,spoofed=false;
+		topology:linearHVFailureSensor->automaticScram,connected_modbus_slave;
+		quality:linearHVFailureSensor,spoofed=false;
+		topology:pulseHVFailureSensor->automaticScram,connected_modbus_slave;
+		quality:pulseHVFailureSensor,spoofed=false;
+		topology:logNHVFailureSensor->nlogPowerSensor,power_monitor;
+		topology:linearHVFailureSensor->linearPowerSensor,power_monitor;
+		topology:pulseHVFailureSensor->pulsePowerSensor,power_monitor;
+		topology:buildingPower->logNHVFailureSensor,power:=120;
+		topology:buildingPower->linearHVFailureSensor,power:=120;
+		topology:buildingPower->pulseHVFailureSensor,power:=120;
+
+		quality:logNHVFailureSensor,platform=HVSensor;
+		quality:linearHVFailureSensor,platform=HVSensor;
+		quality:pulseHVFailureSensor,platform=HVSensor;
+
+		#Continous Air Monitor
+		quality:continuousAirMonitor,status=ok;
+		quality:continuousAirMonitor,powerStatus=on;
+		quality:continuousAirMonitor,airborneRadiation:=50;#cpm
+		quality:continuousAirMonitor,alarmActivated=false;
+
+		topology:continuousAirMonitor->operator,connected_modbus_slave;
+		quality:continuousAirMonitor,spoofed=false;
+		topology:continuousAirMonitor->ventilationController,connected_modbus_slave;
+		topology:airborneRadiation<->continuousAirMonitor,physical;
+		topology:buildingPower->continuousAirMonitor,power:=120;
+
+		quality:continuousAirMonitor,platform=CAM;
+
+		#Area Monitoring System
+		quality:areaMonitoringSystem,status=ok;
+		quality:areaMonitoringSystem,powerStatus=on;
+		quality:areaMonitoringSystem,cave_N16_level:=0;#mrem/hr
+		quality:areaMonitoringSystem,nBeamRoom_N16_level:=0;
+		quality:areaMonitoringSystem,sBeamRoom_N16_level:=0;
+		quality:areaMonitoringSystem,sample_N16_level:=0;
+		quality:areaMonitoringSystem,bridge_N16_level:=0;
+		quality:areaMonitoringSystem,room101_N16_level:=0;
+
+		topology:areaMonitoringSystem->buildingEvacAlarm,connected_modbus_slave;
+		topology:areaMonitoringSystem->coolingTowerFan,connected_modbus_slave;
+		topology:areaMonitoringSystem->operator,connected_modbus_slave;
+		quality:areaMonitoringSystem,spoofed=false;
+		topology:airborneRadiation<->areaMonitoringSystem,physical;
+		topology:buildingPower->areaMonitoringSystem,power:=120;
+
+		quality:areaMonitoringSystem,platform=N16Detector;
+
+		#Diffuser
+		quality:diffuser,status=ok;
+		quality:diffuser,powerStatus=on;
+		quality:diffuser,pressure=30;#psi
+
+		topology:diffuser->operator,connected_modbus_slave;
+		quality:diffuser,spoofed=false;
+		topology:buildingPower->diffuser,power:=120;
+
+		quality:diffuser,platform=diffuser;
+
+		#Coolant Level Sensor
+		quality:coolantLevelSensor,status=ok;
+		quality:coolantLevelSensor,powerStatus=on;
+		quality:coolantLevelSensor,level:=0.0;#defining 0 as neutral
+
+		topology:coolantLevelSensor->operator,connected_modbus_slave;
+		quality:coolantLevelSensor,spoofed=false;
+		topology:coolant<->coolantLevelSensor,physical;
+		topology:buildingPower->coolantLevelSensor,power:=120;
+
+		quality:coolantLevelSensor,platform=coolantLevelSensor;
+
+		#Backup power and connections
+		quality:backupPower,status=ok;
+		quality:backupPower,powerStatus=on;
+		quality:backupPower,chargeLevel:=1;#percent, 1 down to 0
+
+		#Only provides power when main power is off
+		topology:backupPower->buildingEvacAlarm,power:=0.0;
+		topology:backupPower->continuousAirMonitor,power:=0.0;
+		topology:backupPower->areaMonitoringSystem,power:=0.0;
+		topology:backupPower->coolantLevelSensor,power:=0.0;
+		topology:backupPower->seismicSensor1,power:=0.0;
+		topology:backupPower->nlogPowerSensor,power:=0.0;
+		topology:backupPower->linearPowerSensor,power:=0.0;
+		topology:backupPower->pulsePowerSensor,power:=0.0;
+		topology:buildingPower->backupPower,power:=120;#needs to charge
+
+		quality:backupPower,platform=backupPower;
+
+		#Bridge
+		quality:bridge,status=ok;
+		quality:bridge,powerStatus=on;
+		quality:bridge,actualPosition:=7.0;
+		quality:bridge,reportedPosition:=7.0;
+
+		topology:bridge->operator,connected_modbus_slave;
+		quality:bridge,spoofed=false;
+		topology:buildingPower->backupPower,power:=120;#needs power to move
+
+		quality:bridge,platform=bridge;
+
+
+		#Water Puritfication Systems
+
+		#Water Makeup Pump
+		quality:waterMakeupPump,status=ok;
+		quality:waterMakeupPump,powerStatus=on;
+		quality:waterMakeupPump,pumpStatus=off;
+
+		topology:coolant<->waterMakeupPump,physical;
+		topology:buildingPower->waterMakeupPump,power:=120;
+		#poolTotalizer connection is unidirectional
+
+		quality:waterMakeupPump,platform=pump;
+
+		#Purification Recirculation Pump
+		quality:purificationRecirculationPump,status=ok;
+		quality:purificationRecirculationPump,powerStatus=on;
+		quality:purificationRecirculationPump,pumpStatus=on;
+
+		topology:coolant<->purificationRecirculationPump,physical;
+		topology:buildingPower->purificationRecirculationPump,power:=120;
+
+		quality:purificationRecirculationPump,platform=pump;
+
+		#Flowmeter
+		quality:flowmeter,status=ok;
+		quality:flowmeter,powerStatus=on;
+		quality:flowmeter,flowRate:=10;#gpm
+
+		topology:coolant<->flowmeter,physical;
+		topology:buildingPower->flowmeter,power:=120;
+
+		quality:flowmeter,platform=flowmeter;
+
+		#Conductivity Cells 1 and 2
+		quality:conductivityCell1,status=ok;
+		quality:conductivityCell1,powerStatus=on;
+		quality:conductivityCell1,conductivity:=0.4;#in micromhos/cm
+		quality:conductivityCell2,status=ok;
+		quality:conductivityCell2,powerStatus=on;
+		quality:conductivityCell2,resistance:=0.1;#in MOhms
+
+		topology:conductivityCell1->operator,connected_modbus_slave;
+		quality:conductivityCell1,spoofed=false;
+		topology:conductivityCell2->operator,connected_modbus_slave;
+		quality:conductivityCell2,spoofed=false;
+		topology:coolant<->conductivityCell1,physical;
+		topology:coolant<->conductivityCell2,physical;
+		topology:buildingPower->conductivityCell1,power:=120;
+		topology:buildingPower->conductivityCell2,power:=120;
+
+		quality:conductivityCell1,platform=conductivitySensor;
+		quality:conductivityCell2,platform=conductivitySensor;
+
+		#Ion Exchanger (no power)
+		quality:ionExchanger,status=ok;
+
+		topology:coolant<->ionExchanger,physical;
+
+		quality:ionExchanger,platform=ionExchanger;
+
+		#Pool Totalizer (no power)
+		quality:poolTotalizer,status=ok;
+
+		topology:poolTotalizer<->waterMakeupPump,physical_switch;
+		topology:coolant<->poolTotalizer,physical;
+
+		quality:poolTotalizer,platform=totalizer;
+
+
+
+		#Heat Exchange System
+
+		#Coolant Temperature Sensor
+		quality:coolantTempSensor,status=ok;
+		quality:coolantTempSensor,powerStatus=on;
+		quality:coolantTempSensor,temp:=35;
+
+		topology:coolantTempSensor->operator,connected_modbus_slave;
+		quality:coolantTempSensor,spoofed=false;
+		topology:coolant<->coolantTempSensor,physical;
+		topology:buildingPower->coolantTempSensor,power:=120;
+
+		quality:coolantTempSensor,platform=coolantTempSensor;
+
+		#Heat Exchange Pumps
+		quality:heatExchangePump1,status=ok;
+		quality:heatExchangePump1,powerStatus=on;
+		quality:heatExchangePump1,pressureIn:=1.2;#psi
+		quality:heatExchangePump1,pressureOut:=1;
+
+		quality:heatExchangePump2,status=ok;
+		quality:heatExchangePump2,powerStatus=on;
+		quality:heatExchangePump2,pressureIn:=21.1;#psi
+		quality:heatExchangePump2,pressureOut:=3.7;
+
+		topology:heatExchangePump1->operator,connected_modbus_slave;
+		quality:heatExchangePump1,spoofed=false;
+		topology:heatExchangePump2->operator,connected_modbus_slave;
+		quality:heatExchangePump2,spoofed=false;
+		topology:coolant<->heatExchangePump1,physical;
+		topology:coolant<->heatExchangePump2,physical;
+		topology:buildingPower->heatExchangePump1,power:=120;
+		topology:buildingPower->heatExchangePump2,power:=120;
+
+		quality:heatExchangePump1,platform=pump;
+		quality:heatExchangePump2,platform=pump;
+
+		#Conductivity Cell 3
+		quality:conductivityCell3,status=ok;
+		quality:conductivityCell3,powerStatus=on;
+		quality:conductivityCell3,conductivity:=.75;#in micromhos/cm
+
+		topology:conductivityCell3->operator,connected_modbus_slave;
+		quality:conductivityCell3,spoofed=false;
+		topology:coolant<->conductivityCell3,physical;
+		topology:buildingPower->conductivityCell3,power:=120;
+
+		quality:conductivityCell3,platform=conductivitySensor;
+
+		#Tower Totalizer (no power)
+		quality:towerTotalizer,status=ok;
+
+		topology:coolant<->towerTotalizer,physical;
+
+		quality:towerTotalizer,platform=totalizer;
+
+		#Cooling Tower Fan
+		quality:coolingTowerFan,status=ok;
+		quality:coolingTowerFan,powerStatus=on;
+		quality:coolingTowerFan,fan=on;
+		quality:coolingTowerFan,secondaryCoolantTemp:=25;
+
+		topology:coolingTowerFan->buildingEvacAlarm,connected_modbus_master;
+		topology:coolingTowerFan->areaMonitoringSystem,connected_modbus_master;
+		topology:buildingPower->coolingTowerFan,power:=120;
+
+		quality:coolingTowerFan,platform=fan;
+
+		#Ventilation System
+
+		#Ventilaton Controller
+		quality:ventilationController,status=ok;
+		quality:ventilationController,powerStatus=on;
+		quality:ventilationController,mode=normal;
+
+		topology:ventilationController->ventilationIntakeFan,connected_modbus_master;
+		topology:ventilationController->ventilationOuttakeFan,connected_modbus_master;
+		topology:ventilationController->ventilationDiluteFan,connected_modbus_master;
+		topology:ventilationController->continuousAirMonitor,connected_modbus_master;
+		topology:ventilationController->ventilationDampers,connected_modbus_master;
+		topology:ventilationController->operator,connected_modbus_slave;
+		quality:ventilationController,spoofed=false;
+		topology:buildingPower->ventilationController,power:=120;
+
+		quality:ventilationController,platform=ventilationController;
+
+		#Intake Fan
+		quality:ventilationIntakeFan,status=ok;
+		quality:ventilationIntakeFan,powerStatus=on;
+		quality:ventilationIntakeFan,fan=on;
+
+		topology:ventilationIntakeFan->ventilationController,connected_modbus_slave;
+		topology:buildingPower->ventilationIntakeFan,power:=120;
+
+		quality:ventilationIntakeFan,platform=fan;
+
+		#Outtake Fan
+		quality:ventilationOuttakeFan,status=ok;
+		quality:ventilationOuttakeFan,powerStatus=on;
+		quality:ventilationOuttakeFan,fan=on;
+
+		topology:ventilationOuttakeFan->ventilationController,connected_modbus_slave;
+		topology:buildingPower->ventilationOuttakeFan,power:=120;
+
+		quality:ventilationOuttakeFan,platform=fan;
+
+		#Ventilation Air Detector
+		quality:ventilationAirDetector,status=ok;
+		quality:ventilationAirDetector,powerStatus=on;
+		quality:ventilationAirDetector,Ar41_level:=9.9;#cpm
+		quality:ventilationAirDetector,alarmActivated=false;
+
+		topology:ventilationAirDetector->operator,connected_modbus_slave;
+		quality:ventilationAirDetector,spoofed=false;
+		topology:buildingPower->ventilationAirDetector,power:=120;
+		topology:airborneRadiation<->ventilationAirDetector,physical;
+
+		quality:ventilationAirDetector,platform=Ar41Detector;
+
+		#Ventilation Dampers
+		quality:ventilationDampers,status=ok;
+		quality:ventilationDampers,powerStatus=on;
+		quality:ventilationDampers,dampers=open;
+
+		topology:ventilationDampers->ventilationController,connected_modbus_slave;
+		topology:buildingPower->ventilationDampers,power:=120;
+
+		quality:ventilationDampers,platform=dampers;
+
+
+		#Ventilation Dilute Fan
+		quality:ventilationDiluteFan,status=ok;
+		quality:ventilationDiluteFan,powerStatus=on;
+		quality:ventilationDiluteFan,fan=off;
+
+		topology:ventilationDiluteFan->ventilationController,connected_modbus_slave;
+		topology:buildingPower->ventilationDiluteFan,power:=120;
+
+		quality:ventilationDiluteFan,platform=fan;
+
+
+		#Physical qualites
+		#This is probably bad practice, reusing these names
+		quality:reactor,fuelTemp:=50;
+		quality:reactor,reactorPower:=0.1;
+		quality:coolant,coolantLevel:=0.0;
+		quality:coolant,coolantTemp:=35;
+		quality:airborneRadiation,cave_N16_level:=0;#mrem/hr appears to be the appropriate measurement.
+		quality:airborneRadiation,nBeamRoom_N16_level:=0;
+		quality:airborneRadiation,sBeamRoom_N16_level:=0;
+		quality:airborneRadiation,sample_N16_level:=0;
+		quality:airborneRadiation,bridge_N16_level:=0;
+		quality:airborneRadiation,room101_N16_level:=0;
+		quality:airborneRadiation,Ar41_level:=0;
+		quality:airborneRadiation,airborneRadiationLevel:=50;#cpm
+		quality:buildingPower,buildingPower=on;
+		quality:seismicActivity,seismicActivity:=0.003;
+
+		#Physical items are of the "physical" platform for now.
+		quality:reactor,platform=physical;
+		quality:coolant,platform=physical;
+		quality:airborneRadiation,platform=physical;
+		quality:buildingPower,platform=physical;
+		quality:seismicActivity,platform=physical;
+	tags:
+.

@@ -1,0 +1,73 @@
+exploit ubuntu_apache_exploit(website)=
+    preconditions:
+        quality:website,os=ubuntu;
+        quality:website,webserver=apache;
+        quality:website,webserver_version==2.2;
+    postconditions:
+        insert quality:website,command_injection=true;
+.
+
+exploit ubuntu_linux_priv_esc(machine)=
+    preconditions:
+        quality:machine,os=ubuntu;
+        quality:machine,version==12.04;
+    postconditions:
+        insert quality:machine,priv_esc=true;
+.
+
+# https://www.exploit-db.com/exploits/35490/
+exploit icehrm_code_exec(machine)=
+    preconditions:
+        quality:machine,icehrm_version==7.0;
+    postconditions:
+        insert quality:machine,command_injection=true;
+.
+
+# https://www.cvedetails.com/cve/CVE-2017-17067/
+exploit splunk_saml_bypass(machine)=
+    preconditions:
+        quality:machine,splunk_version==6.5;
+        quality:machine,splunk_saml_enabled=true;
+    postconditions:
+        insert quality:machine,priv_esc=true;
+.
+
+exploit inject_command(machine)=
+    preconditions:
+        quality:machine,command_injection=true;
+        quality:machine,priv_esc=true;
+    postconditions:
+        insert quality:machine,root=true;
+.
+
+exploit pivot_private_nat(machine1, machine2)=
+    preconditions:
+        quality:machine1,root=true;
+        topology:machine1->machine2,private_nat;
+    postconditions:
+        insert quality:machine2,root=true;
+.
+
+exploit pivot_dmz(machine1, machine2)=
+    preconditions:
+        quality:machine1,root=true;
+        topology:machine1->machine2,dmz;
+    postconditions:
+        insert quality:machine2,root=true;
+.
+
+exploit pivot_private_firewall(machine1, machine2)=
+    preconditions:
+        quality:machine1,root=true;
+        topology:machine1->machine2,private_firewall;
+    postconditions:
+        insert quality:machine2,root=true;
+.
+
+exploit pivot_private_wifi(machine1, machine2)=
+    preconditions:
+        quality:machine1,root=true;
+        topology:machine1->machine2,wifi_private;
+    postconditions:
+        insert quality:machine2,root=true;
+.

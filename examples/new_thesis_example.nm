@@ -1,0 +1,26 @@
+network model =
+    assets:
+        router;
+        website;
+        database;
+        nas;
+        workstation;
+
+    facts:
+        topology:router<->website,dmz;
+        topology:router<->workstation,private_nat;
+
+        quality:website,service_type=web_server;
+        quality:website,sql_injection=true;
+        topology:website<->database,private_segment;
+        topology:website<->nas,private_segment;
+
+        quality:workstation,user_phished=true;
+        quality:workstation,malware_downloaded=false;
+        quality:workstation,user_admin_privs=true;
+        topology:workstation<->nas,private_segment;
+
+        quality:nas,service_type=storage;
+
+        quality:database,service_type=database;
+.

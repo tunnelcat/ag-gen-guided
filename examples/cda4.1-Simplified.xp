@@ -1,0 +1,55 @@
+exploit create_cda(a)=
+    preconditions:
+        quality:a,critical=true;
+        quality:a,digital=true;
+    postconditions:
+        insert quality:a,cda=true;
+.
+
+exploit expand_critical_1_1(a, b)=
+    preconditions:
+        quality:a,critical=true;
+        topology:a->b,physical;
+    postconditions:
+        insert quality:b,critical=true;
+.
+
+exploit expand_critical_1_2(a, b)=
+    preconditions:
+        quality:a,critical=true;
+        topology:a<->b,physical;
+    postconditions:
+        insert quality:b,critical=true;
+.
+
+exploit expand_critical_2_1(a, b)=
+    preconditions:
+        quality:a,critical=true;
+        topology:a->b,connected_modbus_slave;
+    postconditions:
+        insert quality:b,critical=true;
+.
+
+exploit expand_critical_2_2(a, b)=
+    preconditions:
+        quality:a,critical=true;
+        topology:a<->b,connected_modbus_slave;
+    postconditions:
+        insert quality:b,critical=true;
+.
+
+exploit expand_critical_3_1(a, b)=
+    preconditions:
+        quality:a,critical=true;
+        topology:a->b,connected_modbus_master;
+    postconditions:
+        insert quality:b,critical=true;
+.
+
+exploit expand_critical_3_2(a, b)=
+    preconditions:
+        quality:a,critical=true;
+        topology:a<->b,connected_modbus_master;
+    postconditions:
+        insert quality:b,critical=true;
+.

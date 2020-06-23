@@ -1,0 +1,17 @@
+network test =
+    assets:
+        workstation;
+        printer;
+        router;
+        internet;
+
+    facts:
+        quality:workstation,os=win7;
+        quality:workstation,adobe_ver=8.6;
+        topology:workstation<->router,connected;
+
+        quality:printer,make=hp;
+        quality:printer,password=none;
+        quality:printer,firmware=3.5;
+        topology:printer<->router,connected;
+.

@@ -1,0 +1,77 @@
+network model =
+    assets:
+        # Router
+        border_router;
+
+        # DMZ
+        website;
+        public_api;
+
+        # Internal
+        storage_server;
+        active_directory;
+        icehrm;
+        splunk;
+
+        # Workstations
+        workstation1;
+        workstation2;
+
+        # Wifi
+        ap;
+        personal_laptop;
+        personal_phone;
+
+    facts:
+        quality:border_router,vendor=paloalto;
+        quality:border_router,os=panos;
+        quality:border_router,version:=8;
+
+        quality:website,os=ubuntu;
+        quality:website,version:=12.04;
+        quality:website,webserver=apache;
+        quality:website,webserver_version:=2.2;
+        topology:border_router<->website,dmz;
+
+        quality:public_api,os=ubuntu;
+        quality:public_api,version:=12.04;
+        quality:public_api,backend=flask;
+        quality:public_api,backend_version:=6;
+        topology:border_router<->public_api,dmz;
+
+        quality:storage_server,os=freebsd;
+        quality:storage_server,version:=10;
+        quality:storage_server,smb=enabled;
+        quality:storage_server,nfs=enabled;
+        topology:border_router<->storage_server,private_firewall;
+
+        quality:active_directory,os=win2008r2;
+        quality:active_directory,domain_controller=true;
+        topology:border_router<->active_directory,private_firewall;
+
+        quality:icehrm,webserver=apache;
+        quality:icehrm,webserver_version:=2.2;
+        quality:icehrm,icehrm_version:=7.0;
+        topology:border_router<->icehrm,private_firewall;
+
+        quality:splunk,webserver=apache;
+        quality:splunk,webserver_version:=2.2;
+        quality:splunk,splunk_saml_enabled=true;
+        quality:splunk,splunk_version:=6.5;
+        topology:border_router<->splunk,private_firewall;
+
+        quality:workstation1,type=workstation;
+        quality:workstation1,user_admin=true;
+        topology:border_router<->workstation1,private_nat;
+
+        quality:workstation2,type=workstation;
+        quality:workstation2,user_admin=true;
+        topology:border_router<->workstation2,private_nat;
+
+        topology:border_router<->ap,private_nat;
+
+        topology:ap<->personal_laptop,wifi_private;
+
+        topology:ap<->personal_phone,wifi_private;
+    tags:
+.

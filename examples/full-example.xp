@@ -1,0 +1,16 @@
+exploit firmware_rollback(printer) =
+    preconditions:
+        quality:printer,make=hp;
+        quality:printer,password=none;
+        quality:printer,firmware=3.5;
+    postconditions:
+        insert quality:printer,root=true;
+.
+
+exploit adobe_vuln(computer) =
+    preconditions:
+        quality:computer,os=win7;
+        quality:computer,adobe_ver=8.6;
+    postconditions:
+        insert quality:computer,admin=true;
+.
