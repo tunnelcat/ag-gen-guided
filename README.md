@@ -154,8 +154,23 @@ Execute an example from the examples directory.
 *Since the program should be located at* `build/ag_gen`, *run this from the* `build` *directory.*
 
 ```sh
-./ag_gen -n ../examples/1.nm -x ../examples/1.xp
+./ag_gen -n ../examples/thesis_example.nm -x ../examples/thesis_example.xp 24 96
 ```
+Note: the 24 and 96 are the `thread_count` and `init_qsize` respectively. (Used for multiprocessing)
+
+## Troubleshooting
+### Duplicate Key Value
+If you are getting:
+```sh
+Importing Models and Exploits into Database: Database Exception: ERROR:  duplicate key value violates unique constraint "asset_pkey"
+DETAIL:  Key (id)=(0) already exists.
+
+./t1.sh: line 5: 13780 Aborted                 ./ag_gen -n ../examples/1.nm -x ../examples/1.xp 24 96
+```
+Run the included `./clear_db.sh` script, then try again. 
+
+## Graphviz
+# TODO
 
 ## Contributing
 ### Editorconfig

@@ -6,4 +6,4 @@ mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ../
 make ag_gen
-./ag_gen -n ../examples/1.nm -x ../examples/1.xp 8 64
+./ag_gen -n ../examples/thesis_example.nm -x ../examples/thesis_example.xp 24 96 

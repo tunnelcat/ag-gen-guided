@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 OS=$(uname | tr 'A-Z' 'a-z')
 
