@@ -1,0 +1,42 @@
+# Ferdinand Mudjialim, 2020/04/01
+# Simple exploit model (designed for cars3, but can be used for others)
+
+# careful with the = and == difference
+# version numbers like 1.2.30 converted to 12.30 (for float compatibility)
+
+exploit kernel_exploit(machine)=
+	preconditions:
+		quality:machine,kernel_version==44.9;
+	postconditions:
+		insert quality:machine,priv_esc=true;
+.
+
+exploit apache_exploit(machine)=
+	preconditions:
+		quality:machine,apache_version==24.10;
+	postconditions:
+		insert quality:machine,dos=true;
+.
+
+exploit rsh_mitm(machine)=
+	preconditions:
+		quality:machine,rsh=enabled;
+	postconditions:
+		insert quality:machine,mitm=true;
+.
+
+exploit root_remote_execution(machine)=
+	preconditions:
+		quality:machine,priv_esc=true;
+		quality:machine,remote_execution=true;
+	postconditions:
+		insert quality:machine,root=true;
+.
+
+exploit opensmtpd_exploit(machine1, machine2)=
+	preconditions:
+		quality:machine2,opensmtpd_version==66.2;
+		topology:machine1->machine2,connected;
+	postconditions:
+		insert quality:machine2,remote_execution=true;
+.

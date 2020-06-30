@@ -441,6 +441,7 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
     }
+    
     printf("Finished init\n");
 
     std::string config_section = (opt_config.empty()) ? "default" : opt_config;
@@ -525,18 +526,19 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Done\n";
 
-
-
-
-
-
-
     std::cout << "Total Time: " << postinstance.elapsed_seconds.count() << " seconds\n";
     std::cout << "Total States: " << postinstance.factbases.size() << "\n";
     std::cout << "Saving Attack Graph to Database: " << std::flush;
     save_ag_to_db(postinstance, true);
     std::cout << "Done\n";
 
+    //for -g option: write graphviz dot file (using database)
+    if (should_graph) {
+	    std::cout << "Writing graphviz dot file (using database) to: " << opt_graph << std::endl;
+	    Graph graphviz = graph_init();
+	    graph_ag(graphviz, opt_graph);
+    }
+    
     gettimeofday(&tf1,NULL);
     double tdiff1;
     tdiff1=(tf1.tv_sec-ts1.tv_sec)*1000.0+(tf1.tv_usec-ts1.tv_usec)/1000.0;

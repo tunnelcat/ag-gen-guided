@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./db_manage.sh -d ag_gen 
+./clear_db.sh
 rm -r build
 mkdir build
 cd build

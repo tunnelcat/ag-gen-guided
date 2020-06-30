@@ -170,7 +170,21 @@ DETAIL:  Key (id)=(0) already exists.
 Run the included `./clear_db.sh` script, then try again. 
 
 ## Graphviz
-# TODO
+### Generating dot files for visualization
+Use the `-g <filename>` option in the command line to generate a dot file for GraphViz to read. 
+Example:
+```sh
+./ag_gen -n ../examples/thesis_example.nm -x ../examples/thesis_example.xp -g ../graph.dot 24 96
+```  
+
+Then, generate a png file from the dot file using the `dot` command:
+```sh
+dot graph.dot -Tpng -o graph.png
+```
+
+Note: For larger graphs (like the included thesis_example), the image generation will take some time.  
+You may want to instead use the smaller `cars3_rsh.nm` and `cars3_rsh.xp` located in the `examples` folder to test the GraphViz functionality.
+For convenience, the `./tcars.sh` script should automatically generate a dot and png for the cars3_rsh example.
 
 ## Contributing
 ### Editorconfig

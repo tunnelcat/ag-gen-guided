@@ -1,0 +1,30 @@
+# Ferdinand Mudjialim, 2020/04/01
+# Skeleton model without duplicates
+# PC->AP->Car
+
+# careful with the = and := difference
+# version numbers like 1.2.30 converted to 12.30 (for float compatibility)
+
+network model =
+    assets:
+        # Router
+        ap;
+
+        # Cars (assuming identical software)
+        car;
+
+        # Laptops
+        pc;
+
+    facts:
+        quality:car,kernel_version:=44.9;
+        quality:car,opensmtpd_version:=66.2;
+        quality:car,apache_version:=24.10;
+        quality:car,rsh=enabled;
+
+    	topology:ap<->car,connected;
+
+        topology:ap<->pc,connected;
+
+    tags:
+.

@@ -644,7 +644,7 @@ void save_ag_to_db(AGGenInstance &instance, bool save_keyvalue){
 	{
         std::string edge_sql_query = "INSERT INTO edge VALUES ";
         std::string edge_assets_sql_query = "INSERT INTO edge_asset_binding VALUES ";
-        for(int i=0;i<jj/2+(k==1)?(jj%2):0;i++){
+        for(int i=0;i<(jj/2)+((k==1)?(jj%2):0);i++){
 	    int idx=unique_idx[i+k*(jj/2)];
 	    int eid = edges[idx].get_id();
             if(i==0){
