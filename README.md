@@ -37,7 +37,7 @@ VMware Tools makes your life easier. Install it! (Enables copy/paste, display sc
 
 
 ```sh
-sudo apt install open-vm-tools
+sudo apt install open-vm-tools open-vm-tools-desktop
 ```
 
 Then reboot the VM, and you should have proper display scaling. 
