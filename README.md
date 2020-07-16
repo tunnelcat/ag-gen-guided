@@ -31,6 +31,13 @@ your_username_here ALL=(ALL)       ALL
 
 Make sure you have sudo permissions by testing with something like: `sudo echo hello`
 
+### Updating packages
+
+Don't forget to update your system packages!
+```sh 
+sudo apt-get update && sudo apt-get upgrade
+```
+
 ### Install VMware Tools
 
 VMware Tools makes your life easier. Install it! (Enables copy/paste, display scaling, etc. for VM)  
