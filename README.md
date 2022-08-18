@@ -1,5 +1,6 @@
 # ag-gen-guided
-Code and Setup Tutorial for RAGE Attack Graph Generator.
+Code and Setup Tutorial for RAGE Attack Graph Generator.  
+PROPERTY OF UNIVERSITY OF TULSA SECURITY RESEARCH GROUP  
 
 ## Setup
 RAGE can work with Linux / MacOS, but is recommended that you use a Debian-based Linux to facilitate the process. 
